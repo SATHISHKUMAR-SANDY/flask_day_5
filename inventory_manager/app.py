@@ -6,16 +6,20 @@ from config import Config
 app = Flask(__name__)
 app.config.from_object(Config)
 
+# Initialize the database
 db.init_app(app)
 
+# Create tables on first app context
 with app.app_context():
     db.create_all()
 
+# Home route: list all items
 @app.route('/')
 def index():
     items = Item.query.order_by(Item.updated_on.desc()).all()
     return render_template('index.html', items=items)
 
+# Add new inventory item
 @app.route('/add', methods=['GET', 'POST'])
 def add_item():
     form = ItemForm()
@@ -27,6 +31,7 @@ def add_item():
         return redirect(url_for('index'))
     return render_template('add_item.html', form=form)
 
+# Edit item or delete if quantity = 0
 @app.route('/edit/<int:id>', methods=['GET', 'POST'])
 def edit_item(id):
     item = Item.query.get_or_404(id)
@@ -36,13 +41,15 @@ def edit_item(id):
         item.quantity = form.quantity.data
         if item.quantity == 0:
             db.session.delete(item)
+            db.session.commit()
             flash('Item deleted (stock = 0).', 'warning')
-        db.session.commit()
-        if item.quantity != 0:
+        else:
+            db.session.commit()
             flash('Item updated.', 'info')
         return redirect(url_for('index'))
     return render_template('edit_item.html', form=form, item=item)
 
+# Delete item manually
 @app.route('/delete/<int:id>', methods=['POST'])
 def delete_item(id):
     item = Item.query.get_or_404(id)
@@ -51,5 +58,6 @@ def delete_item(id):
     flash('Item deleted from inventory.', 'danger')
     return redirect(url_for('index'))
 
+# Run the app (development mode)
 if __name__ == '__main__':
     app.run(debug=True)
