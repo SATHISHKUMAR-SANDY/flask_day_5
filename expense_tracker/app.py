@@ -15,20 +15,12 @@ csrf = CSRFProtect(app)
 
 from models import Expense
 
-@app.before_first_request
-def create_tables():
-    db.create_all()
-
 @app.route('/')
 def index():
-    # Show all expenses ordered by date descending
     expenses = Expense.query.order_by(Expense.date.desc()).all()
-
-    # Group expenses by category (dictionary of {category: [expenses]})
     grouped = {}
     for exp in expenses:
         grouped.setdefault(exp.category, []).append(exp)
-
     return render_template('expenses.html', expenses=expenses, grouped=grouped)
 
 @app.route('/add', methods=['GET', 'POST'])
@@ -69,6 +61,7 @@ def delete_expense(id):
     flash("Expense deleted successfully!", "success")
     return redirect(url_for('index'))
 
-
 if __name__ == '__main__':
+    with app.app_context():
+        db.create_all()
     app.run(debug=True)

@@ -4,7 +4,6 @@ from forms import UpdateUserForm
 from config import Config
 from flask_bcrypt import Bcrypt
 from flask_login import LoginManager, login_required, login_user, current_user, logout_user
-
 import logging
 
 app = Flask(__name__)
@@ -15,22 +14,27 @@ bcrypt = Bcrypt(app)
 login_manager = LoginManager(app)
 login_manager.login_view = 'login'
 
-# Setup logging for audit
+# Setup logging
 logging.basicConfig(filename='update_audit.log', level=logging.INFO, format='%(asctime)s %(message)s')
+
+first_run = True
 
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(int(user_id))
 
-@app.before_first_request
-def create_tables():
-    db.create_all()
-    # Create a test user if none exists
-    if not User.query.first():
-        user = User(username='testuser', email='test@example.com')
-        user.set_password('password')
-        db.session.add(user)
-        db.session.commit()
+@app.before_request
+def initialize():
+    global first_run
+    if first_run:
+        with app.app_context():
+            db.create_all()
+            if not User.query.first():
+                user = User(username='testuser', email='test@example.com')
+                user.set_password('password')
+                db.session.add(user)
+                db.session.commit()
+        first_run = False
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -66,7 +70,6 @@ def users():
 def edit_user(id):
     user = User.query.get_or_404(id)
 
-    # Only allow the logged-in user to edit their own profile (optional)
     if user.id != current_user.id:
         flash('You can only edit your own profile.', 'danger')
         return redirect(url_for('users'))
@@ -76,11 +79,9 @@ def edit_user(id):
     if form.validate_on_submit():
         before_update = f"Before Update - username: {user.username}, email: {user.email}"
 
-        # Update username and email
         user.username = form.username.data
         user.email = form.email.data
 
-        # Password change logic
         if form.current_password.data:
             if not user.check_password(form.current_password.data):
                 flash('Current password is incorrect.', 'danger')

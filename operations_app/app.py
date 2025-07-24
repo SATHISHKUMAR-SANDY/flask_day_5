@@ -6,10 +6,9 @@ app = Flask(__name__)
 app.config.from_object(Config)
 db.init_app(app)
 
-@app.before_first_request
-def create_tables():
+# Moved table creation and dummy data insertion to app context
+with app.app_context():
     db.create_all()
-    # Add some dummy data if tables are empty
     if not User.query.first():
         dummy_users = [
             User(name="Alice", email="alice@example.com"),
@@ -28,36 +27,36 @@ def create_tables():
 
 @app.route('/users')
 def users():
-    users = User.query.all()  # 1. Query all users
+    users = User.query.all()
     return render_template('users.html', users=users)
 
 @app.route('/user/<int:id>')
 def user_detail(id):
-    user = User.query.get(id)  # 2. Query one user by ID
+    user = User.query.get(id)
     if not user:
         abort(404)
     return render_template('user_detail.html', user=user)
 
 @app.route('/user-by-email/<email>')
 def user_by_email(email):
-    user = User.query.filter_by(email=email).first()  # 3. Filter by email
+    user = User.query.filter_by(email=email).first()
     if not user:
         abort(404)
     return render_template('user_detail.html', user=user)
 
 @app.route('/products-in-stock')
 def products_in_stock():
-    products = Product.query.filter_by(in_stock=True).all()  # 4. Products with in_stock=True
+    products = Product.query.filter_by(in_stock=True).all()
     return render_template('products.html', products=products)
 
 @app.route('/blogs')
 def blogs():
-    blogs = Blog.query.order_by(Blog.created_at.desc()).all()  # 5. Blogs ordered by date descending
+    blogs = Blog.query.order_by(Blog.created_at.desc()).all()
     return render_template('blogs.html', blogs=blogs)
 
 @app.route('/user-count')
 def user_count():
-    count = User.query.count()  # 6. Count total users
+    count = User.query.count()
     return f"Total users in DB: {count}"
 
 @app.route('/user-dict/<int:id>')
@@ -65,10 +64,9 @@ def user_dict(id):
     user = User.query.get(id)
     if not user:
         abort(404)
-    # 10. Convert query result to dictionary and print/log it
     user_dict = user.to_dict()
-    print(user_dict)  # Here, just printing to console
-    return user_dict  # Flask will jsonify dict automatically
+    print(user_dict)
+    return user_dict  # Flask will jsonify it automatically
 
 if __name__ == '__main__':
     app.run(debug=True)

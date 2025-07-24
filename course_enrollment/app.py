@@ -7,10 +7,6 @@ app = Flask(__name__)
 app.config.from_object(Config)
 db.init_app(app)
 
-@app.before_first_request
-def setup():
-    db.create_all()
-
 # Courses
 @app.route('/courses')
 def courses():
@@ -90,5 +86,8 @@ def delete_enrollment(id):
     flash('Enrollment deleted successfully!', 'success')
     return redirect(url_for('enrollments'))
 
+# Entry Point
 if __name__ == '__main__':
+    with app.app_context():
+        db.create_all()
     app.run(debug=True)

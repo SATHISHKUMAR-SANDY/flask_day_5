@@ -7,8 +7,8 @@ app = Flask(__name__)
 app.config.from_object(Config)
 db.init_app(app)
 
-@app.before_first_request
-def create_tables():
+# Create tables once when app starts
+with app.app_context():
     db.create_all()
 
 @app.route('/')
@@ -50,7 +50,7 @@ def edit_application(id):
     form = ApplicationForm(obj=application)
     if form.validate_on_submit():
         if form.email.data != application.email:
-            existing_email = Application.query.filter(Application.email==form.email.data, Application.id!=id).first()
+            existing_email = Application.query.filter(Application.email == form.email.data, Application.id != id).first()
             if existing_email:
                 flash("Email already used by another application.", "danger")
                 return render_template('application_form.html', form=form, title="Edit Application")

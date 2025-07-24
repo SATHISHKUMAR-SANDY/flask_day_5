@@ -8,10 +8,6 @@ app = Flask(__name__)
 app.config.from_object(Config)
 db.init_app(app)
 
-@app.before_first_request
-def create_tables():
-    db.create_all()
-
 @app.route('/')
 def index():
     users = User.query.all()
@@ -27,8 +23,8 @@ def create_blog():
         blog = Blog(title=form.title.data, content=form.content.data)
         try:
             db.session.add(blog)
-            db.session.commit()  # 8. commit flow: changes saved in DB here
-            flash("Blog created successfully!", "success")  # 10.
+            db.session.commit()
+            flash("Blog created successfully!", "success")
             return redirect(url_for('index'))
         except Exception as e:
             db.session.rollback()
@@ -72,7 +68,7 @@ def bulk_insert():
         flash(f"Error during bulk insert: {e}", "danger")
     return redirect(url_for('index'))
 
-# 6. Add user from form (handles create operation)
+# 6. Add user from form
 @app.route('/add-user', methods=['GET', 'POST'])
 def add_user():
     form = UserForm()
@@ -91,7 +87,7 @@ def add_user():
             flash(f"Error adding user: {e}", "danger")
     return render_template('user_form.html', form=form)
 
-# 6. Add product from form (in_stock defaults to True)
+# 7. Add product from form
 @app.route('/add-product', methods=['GET', 'POST'])
 def add_product():
     form = ProductForm()
@@ -108,4 +104,6 @@ def add_product():
     return render_template('product_form.html', form=form)
 
 if __name__ == '__main__':
+    with app.app_context():
+        db.create_all()
     app.run(debug=True)

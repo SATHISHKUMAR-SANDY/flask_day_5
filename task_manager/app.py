@@ -8,8 +8,8 @@ app = Flask(__name__)
 app.config.from_object(Config)
 db.init_app(app)
 
-@app.before_first_request
-def create_tables():
+# Create tables on app startup (for Python 3.13+)
+with app.app_context():
     db.create_all()
 
 @app.route('/')

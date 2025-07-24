@@ -8,18 +8,22 @@ app = Flask(__name__)
 app.config.from_object(Config)
 db.init_app(app)
 
-@app.before_first_request
-def setup():
-    db.create_all()
-    # Add sample candidates if none exist
-    if Candidate.query.count() == 0:
-        candidates = [
-            Candidate(name="Alice Smith", party="Party A"),
-            Candidate(name="Bob Johnson", party="Party B"),
-            Candidate(name="Charlie Lee", party="Party C"),
-        ]
-        db.session.bulk_save_objects(candidates)
-        db.session.commit()
+# Proper way to run setup code in Flask 3.x
+@app.before_request
+def initialize_database():
+    if not hasattr(app, 'db_initialized'):
+        with app.app_context():
+            db.create_all()
+            # Add sample candidates if none exist
+            if Candidate.query.count() == 0:
+                candidates = [
+                    Candidate(name="Alice Smith", party="Party A"),
+                    Candidate(name="Bob Johnson", party="Party B"),
+                    Candidate(name="Charlie Lee", party="Party C"),
+                ]
+                db.session.bulk_save_objects(candidates)
+                db.session.commit()
+            app.db_initialized = True  # Prevent repeat init
 
 @app.route('/')
 def index():
