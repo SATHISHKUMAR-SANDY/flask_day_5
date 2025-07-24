@@ -6,7 +6,7 @@ from forms import AppointmentForm, UpdateStatusForm
 import os
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = 'your_secret_key_here'  # change in production
+app.config['SECRET_KEY'] = 'your_secret_key_here'  # Change this in production
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///appointments.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
@@ -15,13 +15,13 @@ csrf = CSRFProtect(app)
 
 from models import Appointment
 
-@app.before_first_request
-def create_tables():
+# ✅ This replaces @app.before_first_request
+with app.app_context():
     db.create_all()
 
 @app.route('/')
 def home():
-    # Show all appointments, excluding expired ones (date < today)
+    # Show all upcoming appointments
     today = date.today()
     appointments = Appointment.query.filter(Appointment.date >= today).order_by(Appointment.date, Appointment.time).all()
     return render_template('appointments.html', appointments=appointments)
@@ -44,7 +44,7 @@ def book():
 
 @app.route('/admin')
 def admin():
-    # Show all appointments including expired ones
+    # Show all appointments (including past)
     appointments = Appointment.query.order_by(Appointment.date.desc(), Appointment.time.desc()).all()
     return render_template('appointments.html', appointments=appointments, admin=True)
 
@@ -66,7 +66,6 @@ def delete_appointment(id):
     db.session.commit()
     flash("Appointment deleted!", "success")
     return redirect(url_for('admin'))
-
 
 if __name__ == "__main__":
     app.run(debug=True)
