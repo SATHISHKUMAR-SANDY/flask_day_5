@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>{{ title }}</h2>
+<form method="POST">
+    {{ form.hidden_tag() }}
+    <div class="mb-3">
+        {{ form.title.label(class="form-label") }}
+        {{ form.title(class="form-control") }}
+        {% for error in form.title.errors %}
+          <small class="text-danger">{{ error }}</small>
+        {% endfor %}
+    </div>
+    <div class="mb-3">
+        {{ form.author.label(class="form-label") }}
+        {{ form.author(class="form-control") }}
+        {% for error in form.author.errors %}
+          <small class="text-danger">{{ error }}</small>
+        {% endfor %}
+    </div>
+    <div class="mb-3">
+        {{ form.quantity.label(class="form-label") }}
+        {{ form.quantity(class="form-control") }}
+        {% for error in form.quantity.errors %}
+          <small class="text-danger">{{ error }}</small>
+        {% endfor %}
+    </div>
+    <div class="mb-3">
+        {{ form.published_year.label(class="form-label") }}
+        {{ form.published_year(class="form-control") }}
+        {% for error in form.published_year.errors %}
+          <small class="text-danger">{{ error }}</small>
+        {% endfor %}
+    </div>
+    {{ form.submit(class="btn btn-success") }}
+    <a href="{{ url_for('list_books') }}" class="btn btn-secondary">Cancel</a>
+</form>
+{% endblock %}

@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>All Students</h2>
+<a href="{{ url_for('register') }}" class="btn btn-primary mb-3">+ Register Student</a>
+<table class="table table-bordered">
+    <thead>
+        <tr><th>ID</th><th>Name</th><th>Roll No</th><th>Email</th><th>Age</th><th>Actions</th></tr>
+    </thead>
+    <tbody>
+        {% for s in students %}
+        <tr>
+            <td>{{ s.id }}</td>
+            <td>{{ s.name }}</td>
+            <td>{{ s.roll_no }}</td>
+            <td>{{ s.email }}</td>
+            <td>{{ s.age }}</td>
+            <td>
+                <a href="{{ url_for('edit', student_id=s.id) }}" class="btn btn-sm btn-info">Edit</a>
+                <a href="{{ url_for('delete', student_id=s.id) }}" class="btn btn-sm btn-danger">Delete</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block title %}{{ post.title if post else "New Post" }}{% endblock %}
+{% block content %}
+
+{% if post %}
+  <h2>{{ post.title }}</h2>
+  <p>{{ post.content }}</p>
+  <hr>
+  <h4>Comments</h4>
+  {% for comment in post.comments %}
+    <div class="mb-2">
+      <p>{{ comment.content }}</p>
+      <hr>
+    </div>
+  {% else %}
+    <p>No comments yet.</p>
+  {% endfor %}
+  <hr>
+{% endif %}
+
+<form method="POST">
+  {{ form.hidden_tag() }}
+  <div class="mb-3">
+    {{ form.content.label }}<br>
+    {{ form.content(class="form-control") }}
+    {% for error in form.content.errors %}
+      <small class="text-danger">{{ error }}</small>
+    {% endfor %}
+  </div>
+  {{ form.submit(class="btn btn-primary") }}
+</form>
+
+{% endblock %}

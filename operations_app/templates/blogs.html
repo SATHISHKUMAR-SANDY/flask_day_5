@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Blog Posts</h2>
+{% if blogs %}
+  <ul class="list-group">
+  {% for blog in blogs %}
+    <li class="list-group-item">
+      <strong>{{ blog.title }}</strong><br>
+      <small>Published on {{ blog.created_at.strftime('%Y-%m-%d') }}</small><br>
+      <p>{{ blog.content[:150] }}...</p>
+    </li>
+  {% endfor %}
+  </ul>
+{% else %}
+  <p>No blog posts found.</p>
+{% endif %}
+{% endblock %}

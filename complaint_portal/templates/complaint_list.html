@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+
+{% block title %}All Complaints{% endblock %}
+
+{% block content %}
+<h2>All Complaints</h2>
+<p>Total complaints: <strong>{{ total }}</strong> | Resolved: <strong>{{ resolved }}</strong></p>
+
+<table class="table table-bordered">
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Name</th>
+      <th>Message</th>
+      <th>Resolved</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for complaint in complaints %}
+    <tr>
+      <td>{{ complaint.id }}</td>
+      <td>{{ complaint.name }}</td>
+      <td>{{ complaint.message }}</td>
+      <td>
+        {% if complaint.resolved %}
+          <span class="badge bg-success">Yes</span>
+        {% else %}
+          <span class="badge bg-warning text-dark">No</span>
+        {% endif %}
+      </td>
+      <td>
+        {% if not complaint.resolved %}
+          <form action="{{ url_for('resolve_complaint', id=complaint.id) }}" method="post" style="display:inline;">
+            <button type="submit" class="btn btn-success btn-sm">Mark Resolved</button>
+          </form>
+        {% endif %}
+        <form action="{{ url_for('delete_complaint', id=complaint.id) }}" method="post" style="display:inline;" onsubmit="return confirm('Delete this complaint?');">
+          <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+        </form>
+      </td>
+    </tr>
+    {% else %}
+    <tr><td colspan="5" class="text-center">No complaints submitted.</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

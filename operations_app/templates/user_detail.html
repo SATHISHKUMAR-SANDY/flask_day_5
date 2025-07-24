@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>User Details</h2>
+<p><strong>ID:</strong> {{ user.id }}</p>
+<p><strong>Name:</strong> {{ user.name }}</p>
+<p><strong>Email:</strong> {{ user.email }}</p>
+<p><strong>Created At:</strong> {{ user.created_at.strftime('%Y-%m-%d %H:%M:%S') }}</p>
+<a href="{{ url_for('users') }}" class="btn btn-secondary">Back to Users</a>
+{% endblock %}

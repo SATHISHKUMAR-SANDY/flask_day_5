@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Courses</h2>
+<a href="{{ url_for('add_course') }}" class="btn btn-success mb-3">Add Course</a>
+<table class="table table-bordered">
+  <thead>
+    <tr><th>ID</th><th>Name</th><th>Fee</th></tr>
+  </thead>
+  <tbody>
+    {% for course in courses %}
+    <tr>
+      <td>{{ course.id }}</td>
+      <td>{{ course.name }}</td>
+      <td>${{ "%.2f"|format(course.fee) }}</td>
+    </tr>
+    {% else %}
+    <tr><td colspan="3" class="text-center">No courses found.</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

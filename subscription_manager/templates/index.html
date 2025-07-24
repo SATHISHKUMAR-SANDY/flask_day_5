@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% block content %}
+<h3>Subscribers</h3>
+<table class="table table-bordered">
+  <thead>
+    <tr>
+      <th>Email</th>
+      <th>Plan</th>
+      <th>Subscribed On</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for sub in subscribers %}
+    <tr>
+      <td>{{ sub.email }}</td>
+      <td>{{ sub.plan }}</td>
+      <td>{{ sub.subscribed_on.strftime('%Y-%m-%d %H:%M') }}</td>
+      <td>
+        <a href="{{ url_for('edit_subscriber', id=sub.id) }}" class="btn btn-sm btn-primary">Edit</a>
+        <form action="{{ url_for('delete_subscriber', id=sub.id) }}" method="POST" style="display:inline;">
+          <button class="btn btn-sm btn-danger" onclick="return confirm('Delete this subscriber?')">Delete</button>
+        </form>
+      </td>
+    </tr>
+    {% else %}
+    <tr><td colspan="4" class="text-center">No subscribers found.</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

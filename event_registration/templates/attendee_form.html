@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>{{ title }}</h2>
+<form method="POST">
+    {{ form.hidden_tag() }}
+    <div class="mb-3">
+        {{ form.name.label(class="form-label") }}
+        {{ form.name(class="form-control") }}
+        {% for error in form.name.errors %}
+          <small class="text-danger">{{ error }}</small>
+        {% endfor %}
+    </div>
+    <div class="mb-3">
+        {{ form.email.label(class="form-label") }}
+        {{ form.email(class="form-control") }}
+        {% for error in form.email.errors %}
+          <small class="text-danger">{{ error }}</small>
+        {% endfor %}
+    </div>
+    <div class="mb-3">
+        {{ form.event_name.label(class="form-label") }}
+        {{ form.event_name(class="form-control") }}
+        {% for error in form.event_name.errors %}
+          <small class="text-danger">{{ error }}</small>
+        {% endfor %}
+    </div>
+    {{ form.submit(class="btn btn-success") }}
+    <a href="{{ url_for('list_attendees') }}" class="btn btn-secondary">Cancel</a>
+</form>
+{% endblock %}

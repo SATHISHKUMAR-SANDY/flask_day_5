@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1>Users</h1>
+<ul>
+  {% for user in users %}
+  <li>{{ user.name }} - {{ user.email }}</li>
+  {% else %}
+  <li>No users found.</li>
+  {% endfor %}
+</ul>
+<a href="{{ url_for('add_user') }}" class="btn btn-primary mb-3">Add User</a>
+
+<h1>Products</h1>
+<ul>
+  {% for product in products %}
+  <li>{{ product.name }} - ${{ product.price }} - {% if product.in_stock %}In Stock{% else %}Out of Stock{% endif %}</li>
+  {% else %}
+  <li>No products found.</li>
+  {% endfor %}
+</ul>
+<a href="{{ url_for('add_product') }}" class="btn btn-primary mb-3">Add Product</a>
+
+<h1>Blogs</h1>
+<ul>
+  {% for blog in blogs %}
+  <li><strong>{{ blog.title }}</strong> - {{ blog.content[:100] }}...</li>
+  {% else %}
+  <li>No blog posts found.</li>
+  {% endfor %}
+</ul>
+<a href="{{ url_for('create_blog') }}" class="btn btn-primary mb-3">Create Blog</a>
+{% endblock %}

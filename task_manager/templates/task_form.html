@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>{{ title }}</h2>
+<form method="POST">
+    {{ form.hidden_tag() }}
+    <div class="mb-3">
+        {{ form.title.label(class="form-label") }}
+        {{ form.title(class="form-control") }}
+        {% for error in form.title.errors %}
+          <small class="text-danger">{{ error }}</small>
+        {% endfor %}
+    </div>
+    <div class="mb-3">
+        {{ form.due_date.label(class="form-label") }}
+        {{ form.due_date(class="form-control") }}
+        <div class="form-text">Format: YYYY-MM-DD HH:MM (optional)</div>
+        {% for error in form.due_date.errors %}
+          <small class="text-danger">{{ error }}</small>
+        {% endfor %}
+    </div>
+    <div class="form-check mb-3">
+        {{ form.is_done(class="form-check-input") }}
+        {{ form.is_done.label(class="form-check-label") }}
+    </div>
+    {{ form.submit(class="btn btn-success") }}
+    <a href="{{ url_for('index') }}" class="btn btn-secondary">Cancel</a>
+</form>
+{% endblock %}

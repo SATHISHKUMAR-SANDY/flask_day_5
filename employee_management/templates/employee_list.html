@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+
+{% block title %}Employees{% endblock %}
+
+{% block content %}
+<h2>Employee List</h2>
+
+<form method="get" class="mb-3">
+  <label for="departmentFilter">Filter by Department:</label>
+  <select name="department" id="departmentFilter" class="form-select w-auto d-inline-block">
+    <option value="">All</option>
+    {% for dept in departments %}
+      <option value="{{ dept[0] }}" {% if selected_department == dept[0] %}selected{% endif %}>{{ dept[0] }}</option>
+    {% endfor %}
+  </select>
+  <button class="btn btn-primary btn-sm">Filter</button>
+</form>
+
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Position</th>
+      <th>Department</th>
+      <th>Salary</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for employee in employees %}
+    <tr>
+      <td>{{ employee.name }}</td>
+      <td>{{ employee.position }}</td>
+      <td>{{ employee.department }}</td>
+      <td>${{ "%.2f"|format(employee.salary) }}</td>
+      <td>
+        <a href="{{ url_for('employee_detail', id=employee.id) }}" class="btn btn-info btn-sm">View</a>
+        <a href="{{ url_for('edit_employee', id=employee.id) }}" class="btn btn-warning btn-sm">Edit</a>
+        <form action="{{ url_for('delete_employee', id=employee.id) }}" method="post" style="display:inline;" onsubmit="return confirm('Delete this employee?');">
+          <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+        </form>
+      </td>
+    </tr>
+    {% else %}
+      <tr><td colspan="5" class="text-center">No employees found.</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

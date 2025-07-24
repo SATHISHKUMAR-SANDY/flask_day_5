@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Cast Your Vote</h2>
+
+<form method="POST">
+  {{ form.hidden_tag() }}
+
+  <div class="mb-3">
+    {{ form.voter_name.label(class="form-label") }}
+    {{ form.voter_name(class="form-control") }}
+    {% for error in form.voter_name.errors %}
+      <small class="text-danger">{{ error }}</small>
+    {% endfor %}
+  </div>
+
+  <div class="mb-3">
+    {{ form.candidate.label(class="form-label") }}
+    {{ form.candidate(class="form-select") }}
+    {% for error in form.candidate.errors %}
+      <small class="text-danger">{{ error }}</small>
+    {% endfor %}
+  </div>
+
+  {{ form.submit(class="btn btn-success") }}
+</form>
+{% endblock %}
