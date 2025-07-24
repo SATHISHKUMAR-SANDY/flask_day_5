@@ -1,5 +1,6 @@
 Flask
-Flask-SQLAlchemy
 Flask-WTF
-psycopg2-binary
+Flask-SQLAlchemy
+email-validator
 gunicorn
+psycopg2-binary

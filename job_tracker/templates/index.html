@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <a href="{{ url_for('apply') }}">+ Apply for Job</a>
+    <h2>All Applications</h2>
+    <table>
+        <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Job Title</th>
+            <th>Status</th>
+            <th>Applied On</th>
+        </tr>
+        {% for app in applications %}
+        <tr>
+            <td>{{ app.name }}</td>
+            <td>{{ app.email }}</td>
+            <td>{{ app.job_title }}</td>
+            <td>{{ app.status }}</td>
+            <td>{{ app.created_at.strftime('%Y-%m-%d') }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+{% endblock %}
